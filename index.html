@@ -15,18 +15,7 @@
             --text-secondary: #a1a1aa;
             --accent: #14b8a6;
             --accent-hover: #2dd4bf;
-            --card-bg: #18181b;
             --border: #27272a;
-        }
-
-        [data-theme="light"] {
-            --bg: #fafafa;
-            --text: #09090b;
-            --text-secondary: #71717a;
-            --accent: #0d9488;
-            --accent-hover: #0f766e;
-            --card-bg: #ffffff;
-            --border: #e4e4e7;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,7 +30,6 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -54,39 +42,6 @@
             from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .theme-toggle {
-            position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            width: 42px;
-            height: 42px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            z-index: 10;
-        }
-
-        .theme-toggle:hover {
-            border-color: var(--text-secondary);
-            transform: scale(1.05);
-        }
-
-        .theme-toggle svg {
-            width: 18px;
-            height: 18px;
-            fill: var(--text);
-            transition: fill 0.3s ease;
-        }
-
-        .sun { display: none; }
-        [data-theme="light"] .sun { display: block; }
-        [data-theme="light"] .moon { display: none; }
 
         .photo-wrapper {
             width: min(55vw, 280px);
@@ -122,16 +77,6 @@
             font-weight: 500;
             letter-spacing: 0.02em;
             margin-bottom: 0.75rem;
-        }
-
-        .description {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-            max-width: 340px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .links {
@@ -215,12 +160,6 @@
             h1 {
                 font-size: 1.5rem;
             }
-            .theme-toggle {
-                top: 1rem;
-                right: 1rem;
-                width: 38px;
-                height: 38px;
-            }
             footer {
                 margin-top: 2rem;
             }
@@ -228,11 +167,6 @@
     </style>
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
-
     <div class="container">
         <div class="photo-wrapper">
             <img src="meltforce.png" alt="meltforce" class="photo">
@@ -251,16 +185,5 @@
         </a>
         <footer>Berlin, Germany</footer>
     </div>
-
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            html.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
-            localStorage.setItem('theme', current === 'light' ? 'dark' : 'light');
-        }
-        const saved = localStorage.getItem('theme');
-        if (saved) document.documentElement.setAttribute('data-theme', saved);
-    </script>
 </body>
 </html>
