@@ -89,9 +89,9 @@
         [data-theme="light"] .moon { display: none; }
 
         .photo-wrapper {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 1.75rem;
+            width: clamp(200px, 30vw, 280px);
+            height: clamp(200px, 30vw, 280px);
+            margin: 0 auto 2rem;
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid var(--border);
@@ -198,8 +198,7 @@
         }
 
         footer {
-            position: fixed;
-            bottom: 1.5rem;
+            margin-top: 3rem;
             color: var(--text-secondary);
             font-size: 0.75rem;
             letter-spacing: 0.02em;
@@ -232,9 +231,8 @@
             Alter Ego
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
+        <footer>Berlin, Germany</footer>
     </div>
-
-    <footer>Berlin, Germany</footer>
 
     <script>
         function toggleTheme() {
