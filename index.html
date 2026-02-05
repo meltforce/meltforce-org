@@ -89,9 +89,9 @@
         [data-theme="light"] .moon { display: none; }
 
         .photo-wrapper {
-            width: clamp(200px, 30vw, 280px);
-            height: clamp(200px, 30vw, 280px);
-            margin: 0 auto 2rem;
+            width: min(55vw, 280px);
+            height: min(55vw, 280px);
+            margin: 0 auto 1.5rem;
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid var(--border);
@@ -202,6 +202,28 @@
             color: var(--text-secondary);
             font-size: 0.75rem;
             letter-spacing: 0.02em;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1.25rem;
+            }
+            .photo-wrapper {
+                width: min(65vw, 260px);
+                height: min(65vw, 260px);
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .theme-toggle {
+                top: 1rem;
+                right: 1rem;
+                width: 38px;
+                height: 38px;
+            }
+            footer {
+                margin-top: 2rem;
+            }
         }
     </style>
 </head>
