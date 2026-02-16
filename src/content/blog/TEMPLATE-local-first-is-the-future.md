@@ -1,6 +1,6 @@
 ---
-title: "Local-First Is the Future We Were Promised"
-date: 2026-02-16
+title: "TEMPLATE Local-First Is the Future We Were Promised"
+date: 1974-03-21
 tags: ["opinion", "local-first", "privacy"]
 description: "Why I think the tide is finally turning away from cloud-everything."
 draft: true
