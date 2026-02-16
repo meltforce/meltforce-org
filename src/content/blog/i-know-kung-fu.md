@@ -1,7 +1,7 @@
 ---
 title: "I Know Kung Fu"
 date: 2026-01-25
-tags: ["vibecoding", "claude", "opinion"]
+tags: ["vibecoding", "claude", "transcriptions", "podcasts", "llm"]
 description: "Four defining moments in 40 years of computing – and why Claude Code is the latest one."
 ---
 

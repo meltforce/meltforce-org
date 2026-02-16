@@ -1,7 +1,7 @@
 ---
 title: "Today I published my first macOS App"
 date: 2026-02-16
-tags: ["vibecoding","claude","macos"]
+tags: ["vibecoding","claude","macos","email"]
 description: "I missed FMail3 from my Fastmail days, so I vibecoded my own version for mailbox.org."
 ---
 When I switched from [Fastmail](https://www.fastmail.com/) to [mailbox.org](https://mailbox.org/) last autumn, the one thing I really missed was the [FMail3](https://fmail3.appmac.fr/) app. As far as I could tell, there was no equivalent for mailbox.org — so I built one myself.
