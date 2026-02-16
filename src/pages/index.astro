@@ -39,6 +39,7 @@ const recentPosts = allPosts
         <section>
           <h2 class="section-title">Recent Posts</h2>
           <PostList posts={recentPosts} />
+          <a href="/blog/" class="all-posts">all posts &rarr;</a>
         </section>
       )
     }
@@ -46,7 +47,7 @@ const recentPosts = allPosts
     <hr />
 
     <footer class="landing-footer">
-      <a href="https://melter.me" target="_blank" rel="noopener">melter.me</a>
+      <a href="https://melter.me" target="_blank" rel="noopener">Linus</a>
       <span class="sep">&middot;</span>
       <a href="https://github.com/meltforce" target="_blank" rel="noopener"
         >GitHub</a
@@ -120,6 +121,18 @@ const recentPosts = allPosts
   }
 
   .landing-footer a:hover {
+    color: var(--accent);
+  }
+
+  .all-posts {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .all-posts:hover {
     color: var(--accent);
   }
 
