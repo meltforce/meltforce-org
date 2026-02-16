@@ -1,0 +1,64 @@
+---
+const links = [
+  { href: "https://melter.me", label: "melter.me" },
+  { href: "https://github.com/meltforce", label: "GitHub" },
+  { href: "https://mastodon.social/@meltforce", label: "Mastodon", rel: "me" },
+  { href: "https://bsky.app/profile/meltforce.bsky.social", label: "Bluesky" },
+  { href: "/feed.xml", label: "RSS" },
+];
+---
+
+<footer class="site-footer">
+  <div class="footer-links">
+    {
+      links.map((link, i) => (
+        <>
+          <a
+            href={link.href}
+            target={link.href.startsWith("http") ? "_blank" : undefined}
+            rel={[link.href.startsWith("http") && "noopener", link.rel].filter(Boolean).join(" ") || undefined}
+          >
+            {link.label}
+          </a>
+          {i < links.length - 1 && <span class="sep">&middot;</span>}
+        </>
+      ))
+    }
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  .footer-links {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent);
+  }
+
+  .sep {
+    color: var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .site-footer {
+      padding: 1.5rem 1rem;
+    }
+  }
+</style>

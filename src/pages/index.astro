@@ -1,0 +1,139 @@
+---
+import Base from "../layouts/Base.astro";
+import ProjectList from "../components/ProjectList.astro";
+import PostList from "../components/PostList.astro";
+import { getCollection } from "astro:content";
+
+const allProjects = await getCollection("projects");
+const featuredProjects = allProjects.filter((p) => p.data.featured);
+
+const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const recentPosts = allPosts
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+---
+
+<Base title="meltforce">
+  <main class="landing">
+    <section class="hero">
+      <h1>meltforce</h1>
+      <p class="tagline">Builder. Vibecoder. Homelabber.</p>
+      <p class="location">Berlin, Germany</p>
+    </section>
+
+    <hr />
+
+    {
+      featuredProjects.length > 0 && (
+        <section>
+          <h2 class="section-title">Projects</h2>
+          <ProjectList projects={featuredProjects} />
+        </section>
+      )
+    }
+
+    <hr />
+
+    {
+      recentPosts.length > 0 && (
+        <section>
+          <h2 class="section-title">Recent Posts</h2>
+          <PostList posts={recentPosts} />
+        </section>
+      )
+    }
+
+    <hr />
+
+    <footer class="landing-footer">
+      <a href="https://melter.me" target="_blank" rel="noopener">melter.me</a>
+      <span class="sep">&middot;</span>
+      <a href="https://github.com/meltforce" target="_blank" rel="noopener"
+        >GitHub</a
+      >
+      <span class="sep">&middot;</span>
+      <a href="https://mastodon.social/@meltforce" target="_blank" rel="me noopener"
+        >Mastodon</a
+      >
+      <span class="sep">&middot;</span>
+      <a href="https://bsky.app/profile/meltforce.bsky.social" target="_blank" rel="noopener"
+        >Bluesky</a
+      >
+      <span class="sep">&middot;</span>
+      <a href="/feed.xml">RSS</a>
+    </footer>
+  </main>
+</Base>
+
+<style>
+  .landing {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: center;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+  }
+
+  .hero {
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.5rem;
+  }
+
+  .tagline {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .location {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+
+  .section-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+  }
+
+  .landing-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .landing-footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .landing-footer a:hover {
+    color: var(--accent);
+  }
+
+  .sep {
+    color: var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .landing {
+      padding-top: 3rem;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

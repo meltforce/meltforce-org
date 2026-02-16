@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh:*)",
+      "Bash(bash:*)",
+      "Bash(mutagen sync list:*)",
+      "Bash(mutagen sync flush:*)",
+      "Bash(gh repo view:*)",
+      "Bash(dig:*)",
+      "Bash(ansible-playbook:*)",
+      "Bash(ANSIBLE_CONFIG=/Users/linus/projects/homelab/configuration/caddy-public/ansible.cfg ansible-playbook:*)",
+      "Bash(openssl s_client:*)",
+      "Bash(openssl x509:*)",
+      "WebFetch(domain:meltforce.org)",
+      "WebFetch(domain:cast2md.meltforce.org)",
+      "WebFetch(domain:mbomail.meltforce.org)",
+      "WebFetch(domain:charity.wtf)",
+      "WebFetch(domain:shumer.dev)",
+      "WebFetch(domain:gregorschmalzried.blog)",
+      "Bash(command git init)",
+      "Bash(command git remote add origin https://github.com/linus/meltforce-org.git)",
+      "Bash(command git fetch origin)",
+      "Bash(command git remote remove origin)",
+      "Bash(command git remote add origin git@github.com:linus/meltforce-org.git)",
+      "Bash(command git remote add origin https://github.com/meltforce/meltforce-org.git)",
+      "Bash(command git status)",
+      "Bash(command git reset --hard origin/master)",
+      "Bash(command git add -A)"
+    ]
+  }
+}

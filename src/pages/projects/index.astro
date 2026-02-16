@@ -1,0 +1,27 @@
+---
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ProjectList from "../../components/ProjectList.astro";
+import { getCollection } from "astro:content";
+
+const allProjects = await getCollection("projects");
+---
+
+<Base title="Projects" description="Things I've built.">
+  <Header />
+  <main>
+    <h1 class="page-title">Projects</h1>
+    <ProjectList projects={allProjects} />
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+</style>

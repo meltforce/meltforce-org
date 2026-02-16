@@ -1,0 +1,74 @@
+---
+const pathname = Astro.url.pathname;
+const links = [
+  { href: "/blog/", label: "blog" },
+  { href: "/projects/", label: "projects" },
+];
+---
+
+<header class="site-header">
+  <nav>
+    <a href="/" class="site-name">meltforce</a>
+    <div class="nav-links">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[{ active: pathname.startsWith(link.href) }]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .site-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .site-name:hover {
+    color: var(--accent);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.85rem;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .site-header {
+      padding: 1rem 1rem 0;
+    }
+  }
+</style>
