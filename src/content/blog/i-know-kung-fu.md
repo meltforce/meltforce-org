@@ -3,7 +3,6 @@ title: "I Know Kung Fu"
 date: 2026-01-25
 tags: ["vibecoding", "claude", "opinion"]
 description: "Four defining moments in 40 years of computing – and why Claude Code is the latest one."
-draft: true
 ---
 
 My history with computers goes back over 40 years, and there have been four defining moments in my relationship with this technology: my first computer (an Atari ST in 1986), my first time on the open internet (1994), my first conversation with [ChatGPT](https://chatgpt.com/) (2023) – and one that just happened.
