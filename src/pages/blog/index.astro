@@ -6,7 +6,7 @@ import PostList from "../../components/PostList.astro";
 import Search from "../../components/Search.astro";
 import { getCollection } from "astro:content";
 
-const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const allPosts = await getCollection("blog", ({ data }) => import.meta.env.DEV || !data.draft);
 const posts = allPosts.sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
