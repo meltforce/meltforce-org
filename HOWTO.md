@@ -98,7 +98,7 @@ Mastodon app scopes needed: `read:statuses`, `write:statuses`, `write:media`.
 
 ```bash
 cd tools && npm install
-cp .env.example .env  # then fill in your tokens
+op inject -i .env.tpl -o .env
 ```
 
 ### Blog Announce (automatic)
