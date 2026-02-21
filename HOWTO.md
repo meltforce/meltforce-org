@@ -79,6 +79,64 @@ See `src/styles/globals.css` for color definitions.
 
 The site is deployed via GitHub Pages. Push to `origin/master` to trigger a deployment workflow.
 
+## Social Media Cross-Posting
+
+New blog posts are automatically announced to Mastodon and Bluesky when the site deploys. A separate CLI tool lets you manually sync toots from mastodon.social to your other accounts.
+
+### Setup
+
+Create API tokens and add them as GitHub Actions secrets **and** to `tools/.env` for local use:
+
+| Secret | Source |
+|---|---|
+| `MASTODON_SOCIAL_TOKEN` | mastodon.social > Preferences > Development > New app |
+| `FORKIVERSE_TOKEN` | theforkiverse.com > Preferences > Development > New app |
+| `BSKY_IDENTIFIER` | `meltforce.bsky.social` |
+| `BSKY_PASSWORD` | bsky.app > Settings > App Passwords |
+
+Mastodon app scopes needed: `read:statuses`, `write:statuses`, `write:media`.
+
+```bash
+cd tools && npm install
+cp .env.example .env  # then fill in your tokens
+```
+
+### Blog Announce (automatic)
+
+Runs after every deploy via GitHub Actions. For each published (non-draft) blog post not yet tracked in `data/posted.json`, it posts to all three accounts: mastodon.social, theforkiverse.com, and bsky.social.
+
+Tracking is per-platform — if one fails, only that platform retries next deploy.
+
+Test locally with dry-run mode:
+
+```bash
+cd tools && DRY_RUN=1 npx tsx announce.ts
+```
+
+### Repost CLI (manual)
+
+Syncs original toots from mastodon.social to theforkiverse.com and Bluesky. Skips replies and boosts. Preserves media, visibility, content warnings, and sensitive flags.
+
+```bash
+cd tools && npx tsx repost.ts
+```
+
+State is stored in `~/.meltforce-sync-state` (last synced toot ID).
+
+### Preventing duplicate announcements
+
+`data/posted.json` tracks which posts have been announced to which platforms. To skip a post, add its slug manually:
+
+```json
+{
+  "my-post-slug": {
+    "mastodon.social": "2026-01-01T00:00:00Z",
+    "theforkiverse.com": "2026-01-01T00:00:00Z",
+    "bsky.social": "2026-01-01T00:00:00Z"
+  }
+}
+```
+
 ## Useful Commands
 
 - `npm run dev` - Start development server
