@@ -4,11 +4,11 @@
   "type": "module",
   "scripts": {
     "announce": "tsx announce.ts",
-    "repost": "tsx repost.ts"
+    "announce:local": "op run --env-file=.env.tpl -- tsx announce.ts",
+    "repost": "op run --env-file=.env.tpl -- tsx repost.ts"
   },
   "dependencies": {
     "@atproto/api": "^0.13.0",
-    "dotenv": "^16.0.0",
     "gray-matter": "^4.0.0",
     "masto": "^7.0.0"
   },

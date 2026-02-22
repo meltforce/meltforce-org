@@ -91,20 +91,15 @@ op read "op://Homelab Admin/Bluesky/username" | gh secret set BSKY_IDENTIFIER --
 op read "op://Homelab Admin/Bluesky/credential" | gh secret set BSKY_PASSWORD --repo meltforce/meltforce-org
 ```
 
-### Testing locally
+### Running locally
+
+All local runs use `op run` to inject credentials from 1Password at runtime (no `.env` files on disk). You need to be authenticated with `op` first (`eval $(op signin)`).
 
 ```sh
 cd tools && npm ci
-DRY_RUN=1 npx tsx announce.ts    # preview what would be posted (no tokens needed)
-```
-
-To test with real credentials, use the 1Password-backed `.env.tpl`:
-
-```sh
-cd tools
-op inject -i .env.tpl -o .env
-source .env
-npx tsx announce.ts              # posts for real
+DRY_RUN=1 npx tsx announce.ts         # dry run (no tokens needed)
+npm run announce:local                # announce new blog posts for real
+npm run repost                        # cross-post recent mastodon.social toots
 ```
 
 ## Deploy pipeline
