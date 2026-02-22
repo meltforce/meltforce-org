@@ -71,31 +71,32 @@ function composeBlueskyText(post: BlogPost): string {
 async function announceToMastodon(
   instance: MastodonInstance,
   post: BlogPost,
-): Promise<void> {
+): Promise<boolean> {
   const cfg = MASTODON_INSTANCES[instance];
   const token = process.env[cfg.tokenEnv];
   if (!token) {
     console.warn(`  Skipping ${instance}: ${cfg.tokenEnv} not set`);
-    return;
+    return false;
   }
 
   const status = composeMastodonStatus(post);
   if (DRY_RUN) {
     console.log(`  [DRY RUN] Would post to ${instance}:\n${status}\n`);
-    return;
+    return false;
   }
 
   const client = createClient(cfg.url, token);
   const result = await postStatus(client, { status });
   console.log(`  Posted to ${instance}: ${result.url}`);
+  return true;
 }
 
-async function announceToBluesky(post: BlogPost): Promise<void> {
+async function announceToBluesky(post: BlogPost): Promise<boolean> {
   const identifier = process.env.BSKY_IDENTIFIER;
   const password = process.env.BSKY_PASSWORD;
   if (!identifier || !password) {
     console.warn("  Skipping bsky.social: BSKY_IDENTIFIER or BSKY_PASSWORD not set");
-    return;
+    return false;
   }
 
   const text = composeBlueskyText(post);
@@ -103,7 +104,7 @@ async function announceToBluesky(post: BlogPost): Promise<void> {
 
   if (DRY_RUN) {
     console.log(`  [DRY RUN] Would post to bsky.social:\n${text}\n  Link card: ${url}\n`);
-    return;
+    return false;
   }
 
   await bskyLogin(identifier, password);
@@ -114,10 +115,33 @@ async function announceToBluesky(post: BlogPost): Promise<void> {
     description: post.description,
   });
   console.log(`  Posted to bsky.social: ${result.uri}`);
+  return true;
+}
+
+function checkCredentials(): void {
+  const hasMastodon = MASTODON_INSTANCES["mastodon.social"].tokenEnv in process.env &&
+    !!process.env[MASTODON_INSTANCES["mastodon.social"].tokenEnv];
+  const hasForkiverse = MASTODON_INSTANCES["theforkiverse.com"].tokenEnv in process.env &&
+    !!process.env[MASTODON_INSTANCES["theforkiverse.com"].tokenEnv];
+  const hasBsky = !!process.env.BSKY_IDENTIFIER && !!process.env.BSKY_PASSWORD;
+
+  const missing: string[] = [];
+  if (!hasMastodon) missing.push("MASTODON_SOCIAL_TOKEN");
+  if (!hasForkiverse) missing.push("FORKIVERSE_TOKEN");
+  if (!hasBsky) missing.push("BSKY_IDENTIFIER/BSKY_PASSWORD");
+
+  if (missing.length === ALL_PLATFORMS.length) {
+    throw new Error(`No platform credentials configured. Missing: ${missing.join(", ")}`);
+  }
+  if (missing.length > 0) {
+    console.warn(`WARNING: Missing credentials for: ${missing.join(", ")}`);
+  }
 }
 
 async function main() {
   console.log(DRY_RUN ? "=== ANNOUNCE (DRY RUN) ===" : "=== ANNOUNCE ===");
+
+  if (!DRY_RUN) checkCredentials();
 
   const posts = loadBlogPosts();
   const state = loadPostedState();
@@ -136,13 +160,14 @@ async function main() {
 
     for (const platform of pending) {
       try {
-        if (platform === "bsky.social") {
-          await announceToBluesky(post);
-        } else {
-          await announceToMastodon(platform, post);
+        const posted =
+          platform === "bsky.social"
+            ? await announceToBluesky(post)
+            : await announceToMastodon(platform, post);
+        if (posted) {
+          state[post.slug][platform] = new Date().toISOString();
+          updated = true;
         }
-        state[post.slug][platform] = new Date().toISOString();
-        updated = true;
       } catch (err) {
         console.error(`  FAILED on ${platform}:`, err);
         // Leave this platform as null so it retries next deploy

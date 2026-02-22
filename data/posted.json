@@ -1,12 +1,4 @@
 {
-  "i-know-kung-fu": {
-    "mastodon.social": "2026-01-25T00:00:00Z",
-    "theforkiverse.com": "2026-01-25T00:00:00Z",
-    "bsky.social": "2026-01-25T00:00:00Z"
-  },
-  "mbomail-v1": {
-    "mastodon.social": "2026-02-16T00:00:00Z",
-    "theforkiverse.com": "2026-02-16T00:00:00Z",
-    "bsky.social": "2026-02-16T00:00:00Z"
-  }
+  "i-know-kung-fu": {},
+  "mbomail-v1": {}
 }
