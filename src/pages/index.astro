@@ -10,7 +10,7 @@ const featuredProjects = allProjects.filter((p) => p.data.featured);
 const allPosts = await getCollection("blog", ({ data }) => import.meta.env.DEV || !data.draft);
 const recentPosts = allPosts
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
+  .slice(0, 5);
 ---
 
 <Base title="meltforce">
@@ -24,10 +24,11 @@ const recentPosts = allPosts
     <hr />
 
     {
-      featuredProjects.length > 0 && (
+      recentPosts.length > 0 && (
         <section>
-          <h2 class="section-title">Projects</h2>
-          <ProjectList projects={featuredProjects} />
+          <h2 class="section-title">Recent Posts</h2>
+          <PostList posts={recentPosts} />
+          <a href="/blog/" class="all-posts">all posts &rarr;</a>
         </section>
       )
     }
@@ -35,11 +36,10 @@ const recentPosts = allPosts
     <hr />
 
     {
-      recentPosts.length > 0 && (
+      featuredProjects.length > 0 && (
         <section>
-          <h2 class="section-title">Recent Posts</h2>
-          <PostList posts={recentPosts} />
-          <a href="/blog/" class="all-posts">all posts &rarr;</a>
+          <h2 class="section-title">Projects</h2>
+          <ProjectList projects={featuredProjects} />
         </section>
       )
     }
