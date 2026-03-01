@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
+import { slug as githubSlug } from "github-slugger";
 import {
   SITE_URL,
   MASTODON_INSTANCES,
@@ -26,7 +27,7 @@ function loadBlogPosts(): BlogPost[] {
       const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf-8");
       const { data } = matter(raw);
       return {
-        slug: file.replace(/\.md$/, ""),
+        slug: githubSlug(file.replace(/\.md$/, "")),
         title: data.title as string,
         description: (data.description as string) ?? "",
         date: new Date(data.date as string),
