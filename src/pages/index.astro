@@ -5,7 +5,9 @@ import PostList from "../components/PostList.astro";
 import { getCollection } from "astro:content";
 
 const allProjects = await getCollection("projects");
-const featuredProjects = allProjects.filter((p) => p.data.featured);
+const featuredProjects = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
 
 const allPosts = await getCollection("blog", ({ data }) => import.meta.env.DEV || !data.draft);
 const recentPosts = allPosts

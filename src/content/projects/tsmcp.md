@@ -4,4 +4,5 @@ description: "A reverse proxy that exposes private MCP servers on your Tailscale
 tags: ["go", "tailscale", "mcp", "oauth", "reverse-proxy"]
 github: "https://github.com/meltforce/tsmcp"
 featured: true
+order: 4
 ---
