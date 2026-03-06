@@ -54,7 +54,7 @@ function composeMastodonStatus(post: BlogPost): string {
   return `${post.title}\n\n${post.description}\n\n${url}\n\n${hashtags}`;
 }
 
-function composeBlueskyText(post: BlogPost): string {
+function composeBlueskyText(post: BlogPost, includeUrl: boolean): string {
   const url = `${SITE_URL}/blog/${post.slug}/`;
   const hashtags = post.tags
     .slice(0, 3)
@@ -62,8 +62,9 @@ function composeBlueskyText(post: BlogPost): string {
     .join(" ");
   // Bluesky has a 300 grapheme limit; keep it tight
   let text = `${post.title}\n\n${post.description}`;
+  // When images are attached there's no link card embed, so add URL to text
+  if (includeUrl) text += `\n\n${url}`;
   if (hashtags) text += `\n\n${hashtags}`;
-  // Truncate if needed (leave room for facets, the URL is in the embed)
   if (text.length > 295) {
     text = text.slice(0, 292) + "...";
   }
@@ -111,7 +112,7 @@ async function announceToBluesky(post: BlogPost): Promise<boolean> {
     return false;
   }
 
-  const text = composeBlueskyText(post);
+  const text = composeBlueskyText(post, !!post.socialImage);
   const url = `${SITE_URL}/blog/${post.slug}/`;
 
   if (DRY_RUN) {
