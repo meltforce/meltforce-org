@@ -11,15 +11,16 @@ interface Props {
   tags: string[];
   toc?: boolean;
   headings?: { depth: number; slug: string; text: string }[];
+  ogImage?: string;
 }
 
-const { title, date, description, tags, toc = false, headings = [] } = Astro.props;
+const { title, date, description, tags, toc = false, headings = [], ogImage } = Astro.props;
 
 const formattedDate = date.toISOString().split("T")[0];
 const tocHeadings = headings.filter((h) => h.depth <= 3);
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} ogImage={ogImage}>
   <Header />
   <main>
     <article>

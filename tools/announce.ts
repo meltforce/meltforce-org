@@ -13,7 +13,7 @@ import {
   type Platform,
   type MastodonInstance,
 } from "./lib/config.js";
-import { createClient, postStatus } from "./lib/mastodon.js";
+import { createClient, postStatus, uploadMedia } from "./lib/mastodon.js";
 import { login as bskyLogin, createPost as bskyCreatePost } from "./lib/bluesky.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,6 +33,7 @@ function loadBlogPosts(): BlogPost[] {
         date: new Date(data.date as string),
         tags: (data.tags as string[]) ?? [],
         draft: data.draft as boolean | undefined,
+        socialImage: data.socialImage as string | undefined,
       };
     })
     .filter((p) => !p.draft);
@@ -83,11 +84,21 @@ async function announceToMastodon(
   const status = composeMastodonStatus(post);
   if (DRY_RUN) {
     console.log(`  [DRY RUN] Would post to ${instance}:\n${status}\n`);
+    if (post.socialImage) console.log(`  [DRY RUN] Would attach image: ${post.socialImage}`);
     return false;
   }
 
   const client = createClient(cfg.url, token);
-  const result = await postStatus(client, { status });
+  let mediaIds: string[] | undefined;
+  if (post.socialImage) {
+    const imagePath = path.resolve(__dirname, "..", post.socialImage);
+    const imageData = fs.readFileSync(imagePath);
+    const blob = new Blob([imageData], { type: "image/png" });
+    const media = await uploadMedia(client, blob, post.title);
+    mediaIds = [media.id];
+    console.log(`  Uploaded image to ${instance}: ${media.id}`);
+  }
+  const result = await postStatus(client, { status, mediaIds });
   console.log(`  Posted to ${instance}: ${result.url}`);
   return true;
 }
@@ -105,15 +116,24 @@ async function announceToBluesky(post: BlogPost): Promise<boolean> {
 
   if (DRY_RUN) {
     console.log(`  [DRY RUN] Would post to bsky.social:\n${text}\n  Link card: ${url}\n`);
+    if (post.socialImage) console.log(`  [DRY RUN] Would attach image: ${post.socialImage}`);
     return false;
   }
 
   await bskyLogin(identifier, password);
+  let images: Array<{ blob: Uint8Array; mimeType: string; alt?: string }> | undefined;
+  if (post.socialImage) {
+    const imagePath = path.resolve(__dirname, "..", post.socialImage);
+    const imageData = fs.readFileSync(imagePath);
+    images = [{ blob: new Uint8Array(imageData), mimeType: "image/png", alt: post.title }];
+    console.log(`  Will attach image to bsky.social: ${post.socialImage}`);
+  }
   const result = await bskyCreatePost({
     text,
     url,
     title: post.title,
     description: post.description,
+    images,
   });
   console.log(`  Posted to bsky.social: ${result.uri}`);
   return true;

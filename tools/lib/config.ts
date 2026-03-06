@@ -34,6 +34,7 @@ export interface BlogPost {
   date: Date;
   tags: string[];
   draft?: boolean;
+  socialImage?: string;
 }
 
 export const DRY_RUN = process.env.DRY_RUN === "1";

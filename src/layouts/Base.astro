@@ -39,7 +39,7 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <meta property="og:image" content={ogImageURL} />
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content={ogImage === "/meltforce.png" ? "summary" : "summary_large_image"} />
     <meta
       name="twitter:title"
       content={title === "meltforce" ? title : `${title} — meltforce`}
