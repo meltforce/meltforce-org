@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@atproto/api": "^0.13.0",
+    "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.0",
     "masto": "^7.0.0"
   },
