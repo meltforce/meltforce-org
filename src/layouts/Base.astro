@@ -46,14 +46,6 @@ const ogImageURL = new URL(ogImage, Astro.site);
     />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
-
-    <!-- RSS -->
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title="meltforce"
-      href="/feed.xml"
-    />
   </head>
   <body>
     <slot />
