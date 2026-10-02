@@ -17,9 +17,4 @@ export default defineConfig({
       allowedHosts: ["jesus"],
     },
   },
-  markdown: {
-    shikiConfig: {
-      theme: "github-dark",
-    },
-  },
 });

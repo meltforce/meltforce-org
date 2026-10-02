@@ -10,6 +10,9 @@ const projects = defineCollection({
     github: z.string().url().optional(),
     url: z.string().url().optional(),
     featured: z.boolean().default(false),
+    // Landing page GEM skin: file label under the icon, bitmap name from src/lib/pixel-icons.ts
+    file: z.string().optional(),
+    icon: z.string().optional(),
     order: z.number().default(99),
   }),
 });

@@ -5,5 +5,7 @@ tags: ["python", "ai", "mcp", "whisper", "podcast", "transcription"]
 github: "https://github.com/meltforce/cast2md"
 url: "https://cast2md.meltforce.org"
 featured: true
-order: 5
+file: "CAST2MD.PRG"
+icon: "doc"
+order: 2
 ---

@@ -1,123 +1,350 @@
 ---
-import Base from "../layouts/Base.astro";
-import ProjectList from "../components/ProjectList.astro";
+import Head from "../components/Head.astro";
 import { getCollection } from "astro:content";
+import { pixelIcon } from "../lib/pixel-icons";
+import "../styles/home.css";
 
-const allProjects = await getCollection("projects");
-const featuredProjects = allProjects
+const diskColors = ["#2b2d6e", "#c43a2f", "#1f7a4a", "#e0b42a", "#3a86c8"];
+
+const projects = (await getCollection("projects"))
   .filter((p) => p.data.featured)
-  .sort((a, b) => a.data.order - b.data.order);
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p, i) => {
+    const url = p.data.url ?? p.data.github ?? "#";
+    return {
+      name: p.data.title,
+      short: p.data.title.split(" ")[0],
+      file: p.data.file ?? `${p.id.toUpperCase().slice(0, 8)}.PRG`,
+      icon: pixelIcon(p.data.icon ?? "doc"),
+      iconSelected: pixelIcon(p.data.icon ?? "doc", true),
+      url,
+      src: p.data.github ?? url,
+      host: url.replace(/^https?:\/\//, ""),
+      desc: p.data.description,
+      tags: p.data.tags,
+      disk: diskColors[i % diskColors.length],
+    };
+  });
+
+const links = [
+  { label: "Linus", url: "https://melter.me", icon: pixelIcon("person") },
+  { label: "GitHub", url: "https://github.com/meltforce", icon: pixelIcon("folder") },
+  { label: "Mastodon", url: "https://mastodon.social/@meltforce", icon: pixelIcon("bubble"), rel: "me" },
+  { label: "Bluesky", url: "https://bsky.app/profile/meltforce.bsky.social", icon: pixelIcon("cloud") },
+];
+
+const skins = [
+  { id: "gem", label: "GEM Desktop" },
+  { id: "disks", label: "Disketten" },
+  { id: "basic", label: "GFA BASIC" },
+];
+
+const fkeys = [
+  { label: "About", url: "#listing" },
+  ...projects.map((p) => ({ label: p.short, url: p.url })),
+  ...links.map((l) => ({ label: l.label, url: l.url })),
+].map((f, i) => ({ ...f, key: `F${i + 1}` }));
+
+const first = projects[0];
 ---
 
-<Base title="meltforce">
-  <main class="landing">
-    <section class="hero">
-      <h1>meltforce</h1>
-      <p class="tagline">builder. homelabber. bodyhacker.<br />vibecoding since atari st.</p>
-      <p class="location">Berlin, Germany</p>
-    </section>
+<!doctype html>
+<html lang="en" data-skin="gem">
+  <head>
+    <Head title="meltforce" />
+    <script is:inline>
+      // Skin choice runs before first paint: ?skin= override, then an explicit
+      // choice (localStorage), then this session's random pick (sessionStorage).
+      (function () {
+        var skins = ["gem", "disks", "basic"];
+        var valid = function (s) { return skins.indexOf(s) > -1; };
+        var s = new URLSearchParams(location.search).get("skin");
+        try {
+          if (!valid(s)) s = localStorage.getItem("mf-skin") || sessionStorage.getItem("mf-skin");
+          if (!valid(s)) {
+            s = skins[Math.floor(Math.random() * skins.length)];
+            sessionStorage.setItem("mf-skin", s);
+          }
+        } catch (e) {}
+        if (!valid(s)) s = skins[Math.floor(Math.random() * skins.length)];
+        document.documentElement.dataset.skin = s;
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Permanent+Marker&family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="home">
+    <!-- GEM desktop -->
+    <div class="skin skin-gem">
+      <header class="gem-menubar">
+        <span class="gem-brand">meltforce</span>
+        <span class="gem-menu-item gem-extra">Desk</span>
+        <span class="gem-menu-item gem-extra">File</span>
+        <span class="gem-menu-item gem-extra">Projects</span>
+        <span class="gem-menu-item gem-extra">Links</span>
+        <div class="gem-skin-menu">
+          <button type="button" class="gem-menu-item gem-skin-toggle" aria-expanded="false" aria-controls="gem-skin-dropdown">Skin</button>
+          <div class="gem-dropdown" id="gem-skin-dropdown" hidden>
+            {skins.map((k) => (
+              <button type="button" data-skin-pick={k.id} aria-pressed="false">
+                <span class="gem-check" aria-hidden="true"></span>{k.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <span class="gem-clock">Berlin<span data-clock></span></span>
+      </header>
 
-    <hr />
+      <div class="gem-desk">
+        <div class="gem-windows">
+          <div class="gem-col">
+            <section class="gem-window">
+              <div class="gem-titlebar">
+                <span class="gem-box" aria-hidden="true"></span>
+                <span class="gem-title"><span>A:\MELTFORCE.PRG</span></span>
+                <span class="gem-box" aria-hidden="true"></span>
+              </div>
+              <div class="gem-about">
+                <h1>meltforce</h1>
+                <p class="gem-tagline">builder. homelabber. bodyhacker.<br />vibecoding since atari st.</p>
+                <p class="gem-meta">
+                  <span>Berlin, Germany</span>
+                  <span class="gem-bombs" aria-hidden="true"><span></span><span></span><span></span></span>
+                  <span>0 bombs since 1985</span>
+                </p>
+              </div>
+            </section>
 
-    {
-      featuredProjects.length > 0 && (
-        <section>
-          <h2 class="section-title">Projects</h2>
-          <ProjectList projects={featuredProjects} />
-        </section>
-      )
-    }
+            <section class="gem-window" aria-label="Projects">
+              <div class="gem-titlebar">
+                <span class="gem-box" aria-hidden="true"></span>
+                <span class="gem-title"><span>A:\PROJECTS\*.*</span></span>
+                <span class="gem-box" aria-hidden="true"></span>
+              </div>
+              <div class="gem-status">{projects.length} items · click to inspect</div>
+              <ul class="gem-icons">
+                {projects.map((p, i) => (
+                  <li>
+                    <button
+                      type="button"
+                      class="gem-project"
+                      aria-pressed={i === 0 ? "true" : "false"}
+                      data-name={p.name}
+                      data-desc={p.desc}
+                      data-tags={p.tags.join(",")}
+                      data-url={p.url}
+                      data-src={p.src}
+                    >
+                      <img class="icon-normal" src={p.icon} alt="" width="48" height="48" />
+                      <img class="icon-selected" src={p.iconSelected} alt="" width="48" height="48" />
+                      <span class="gem-label">{p.file}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </div>
 
-    <hr />
+          <aside class="gem-dialog" aria-live="polite">
+            <div class="gem-dialog-inner">
+              <div class="gem-dialog-head">PROJECT INFO</div>
+              <h2 class="gem-dialog-name" data-info="name">{first.name}</h2>
+              <p class="gem-dialog-desc" data-info="desc">{first.desc}</p>
+              <ul class="gem-tags" data-info="tags">
+                {first.tags.map((t) => <li>{t}</li>)}
+              </ul>
+              <div class="gem-buttons">
+                <a class="gem-btn" data-info="src" href={first.src}>SRC</a>
+                <a class="gem-btn gem-btn-default" data-info="url" href={first.url}>OPEN</a>
+              </div>
+            </div>
+          </aside>
+        </div>
 
-    <footer class="landing-footer">
-      <a href="https://melter.me" target="_blank" rel="noopener">Linus</a>
-      <span class="sep">&middot;</span>
-      <a href="https://github.com/meltforce" target="_blank" rel="noopener"
-        >GitHub</a
-      >
-      <span class="sep">&middot;</span>
-      <a href="https://mastodon.social/@meltforce" target="_blank" rel="me noopener"
-        >Mastodon</a
-      >
-      <span class="sep">&middot;</span>
-      <a href="https://bsky.app/profile/meltforce.bsky.social" target="_blank" rel="noopener"
-        >Bluesky</a
-      >
-    </footer>
+        <nav class="gem-side" aria-label="Links">
+          <div class="gem-side-top">
+            <div class="gem-desk-icon">
+              <img src={pixelIcon("floppy")} alt="" width="48" height="48" />
+              <span>FLOPPY A</span>
+            </div>
+            {links.map((l) => (
+              <a class="gem-desk-icon" href={l.url} rel={l.rel}>
+                <img src={l.icon} alt="" width="48" height="48" />
+                <span>{l.label}</span>
+              </a>
+            ))}
+          </div>
+          <div class="gem-desk-icon gem-trash">
+            <img src={pixelIcon("trash")} alt="" width="48" height="48" />
+            <span>TRASH</span>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Disk box -->
+    <div class="skin skin-disks">
+      <header class="disks-header">
+        <div class="disks-intro">
+          <h1>meltforce</h1>
+          <p>builder. homelabber. bodyhacker.<br />vibecoding since atari st.</p>
+        </div>
+        <div class="disks-meta">
+          <div class="disks-vent" aria-hidden="true"></div>
+          <p>Berlin, Germany</p>
+          <div class="disks-switch">
+            {skins.map((k) => (
+              <button type="button" data-skin-pick={k.id} aria-pressed="false">{k.label}</button>
+            ))}
+          </div>
+        </div>
+      </header>
+      <ul class="disks-grid">
+        {projects.map((p) => (
+          <li class="disks-item">
+            <div class="disk" style={`--disk: ${p.disk}`}>
+              <div class="disk-shutter" aria-hidden="true"><div></div></div>
+              <div class="disk-label">
+                <h2>{p.name}</h2>
+                <p>{p.tags.join(" · ")}</p>
+              </div>
+            </div>
+            <p class="disks-desc">{p.desc}</p>
+            <p class="disks-links">
+              <a href={p.url}>→ insert</a>
+              <a href={p.src}>src</a>
+            </p>
+          </li>
+        ))}
+      </ul>
+      <footer class="disks-footer">
+        {links.map((l) => <a href={l.url} rel={l.rel}>{l.label}</a>)}
+      </footer>
+    </div>
+
+    <!-- GFA BASIC listing -->
+    <div class="skin skin-basic">
+      <nav class="basic-fkeys" aria-label="Function keys">
+        {fkeys.map((f) => (
+          <a href={f.url}><span class="basic-key">{f.key}</span><span>{f.label}</span></a>
+        ))}
+      </nav>
+      <div class="basic-status">
+        <span class="basic-file">MELTFORCE.LST</span>
+        <div class="basic-switch">
+          {skins.map((k) => (
+            <button type="button" data-skin-pick={k.id} aria-pressed="false">{k.label}</button>
+          ))}
+        </div>
+      </div>
+      <div class="basic-listing" id="listing">
+        <h1>meltforce</h1>
+        <p class="basic-rem">' builder. homelabber. bodyhacker.</p>
+        <p class="basic-rem">' vibecoding since atari st.</p>
+        <p class="basic-rem">' Berlin, Germany</p>
+        <div class="basic-blank"></div>
+        <p><b>FOR</b> i%=1 <b>TO</b> {projects.length}</p>
+        <p class="basic-indent">@project(i%)</p>
+        <p><b>NEXT</b> i%</p>
+        <div class="basic-blank"></div>
+        {projects.map((p) => (
+          <div class="basic-proc">
+            <p><b>PROCEDURE</b> <span class="basic-name">{p.name}</span></p>
+            <p class="basic-indent basic-rem basic-desc">' {p.desc}</p>
+            <p class="basic-indent">tags$="{p.tags.join(" · ")}"</p>
+            <p class="basic-indent basic-run">
+              <span><b>RUN</b> "<a href={p.url}>{p.host}</a>"</span>
+              <span><b>LOAD</b> "<a href={p.src}>src</a>"</span>
+            </p>
+            <p><b>RETURN</b></p>
+          </div>
+        ))}
+        <p class="basic-see">
+          <span>' see also:</span>
+          {links.map((l) => <a href={l.url} rel={l.rel}>{l.label}</a>)}
+        </p>
+        <p class="basic-cursor-line"><span class="basic-cursor" aria-hidden="true"></span></p>
+      </div>
+    </div>
+
     <a rel="me" href="https://theforkiverse.com/@meltforce" hidden>Mastodon</a>
-  </main>
-</Base>
 
-<style>
-  .landing {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    justify-content: center;
-    padding-top: 4rem;
-    padding-bottom: 2rem;
-  }
+    <script>
+      const root = document.documentElement;
 
-  .hero {
-    text-align: center;
-  }
+      // Skin switching (GEM dropdown, disk and BASIC buttons)
+      const pickers = document.querySelectorAll<HTMLButtonElement>("[data-skin-pick]");
+      const syncPickers = () =>
+        pickers.forEach((b) =>
+          b.setAttribute("aria-pressed", String(b.dataset.skinPick === root.dataset.skin)),
+        );
+      pickers.forEach((b) =>
+        b.addEventListener("click", () => {
+          root.dataset.skin = b.dataset.skinPick;
+          try {
+            localStorage.setItem("mf-skin", b.dataset.skinPick!);
+          } catch {}
+          syncPickers();
+          setMenu(false);
+        }),
+      );
+      syncPickers();
 
-  .hero h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    margin-bottom: 0.5rem;
-  }
+      // GEM skin menu: closes on outside click and Escape
+      const menu = document.querySelector<HTMLElement>(".gem-skin-menu")!;
+      const toggle = menu.querySelector<HTMLButtonElement>(".gem-skin-toggle")!;
+      const dropdown = menu.querySelector<HTMLElement>(".gem-dropdown")!;
+      function setMenu(open: boolean) {
+        dropdown.hidden = !open;
+        toggle.setAttribute("aria-expanded", String(open));
+      }
+      toggle.addEventListener("click", () => setMenu(dropdown.hidden));
+      document.addEventListener("click", (e) => {
+        if (!menu.contains(e.target as Node)) setMenu(false);
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !dropdown.hidden) {
+          setMenu(false);
+          toggle.focus();
+        }
+      });
 
-  .tagline {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 0.25rem;
-  }
+      // GEM project selection fills the info dialog; double click opens
+      const info = (key: string) => document.querySelector<HTMLElement>(`[data-info="${key}"]`)!;
+      const icons = document.querySelectorAll<HTMLButtonElement>(".gem-project");
+      icons.forEach((icon) => {
+        icon.addEventListener("click", () => {
+          icons.forEach((i) => i.setAttribute("aria-pressed", String(i === icon)));
+          const d = icon.dataset;
+          info("name").textContent = d.name!;
+          info("desc").textContent = d.desc!;
+          info("tags").replaceChildren(
+            ...d.tags!.split(",").map((t) => Object.assign(document.createElement("li"), { textContent: t })),
+          );
+          info("src").setAttribute("href", d.src!);
+          info("url").setAttribute("href", d.url!);
+        });
+        icon.addEventListener("dblclick", () => {
+          location.href = icon.dataset.url!;
+        });
+      });
 
-  .location {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    opacity: 0.7;
-  }
-
-  .section-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 1.25rem;
-  }
-
-  .landing-footer {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.8rem;
-  }
-
-  .landing-footer a {
-    color: var(--text-muted);
-    text-decoration: none;
-  }
-
-  .landing-footer a:hover {
-    color: var(--accent);
-  }
-
-  .sep {
-    color: var(--border);
-  }
-
-  @media (max-width: 640px) {
-    .landing {
-      padding-top: 3rem;
-    }
-
-    .hero h1 {
-      font-size: 2rem;
-    }
-  }
-</style>
+      // Menu bar clock in Berlin time
+      const clock = document.querySelector<HTMLElement>("[data-clock]")!;
+      const fmt = new Intl.DateTimeFormat("de-DE", {
+        timeZone: "Europe/Berlin",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const tick = () => {
+        clock.textContent = ` · ${fmt.format(new Date())}`;
+        setTimeout(tick, 60_000 - (Date.now() % 60_000));
+      };
+      tick();
+    </script>
+  </body>
+</html>

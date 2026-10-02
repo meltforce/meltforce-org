@@ -5,5 +5,7 @@ tags: ["ios", "swift", "ai", "mistral", "transcription"]
 github: "https://github.com/meltforce/voxtralmemos"
 url: "https://voxtralmemos.meltforce.org"
 featured: true
-order: 3
+file: "VOXTRAL.PRG"
+icon: "mic"
+order: 1
 ---

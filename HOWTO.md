@@ -43,6 +43,7 @@ src/
   components/    - Reusable UI components
   styles/        - Global styles
   content/       - Project entries (using Astro Content Collections)
+  lib/           - Pixel icon bitmaps for the landing page
 public/          - Static assets
 ```
 
@@ -74,9 +75,10 @@ The full field reference is in `README.md`.
 
 ## Styling
 
-The site uses CSS custom properties (variables) for theming. Dark mode is the only theme.
+The site uses CSS custom properties (variables) for theming.
 
-See `src/styles/globals.css` for color definitions.
+- `src/styles/home.css` — landing page skins (light, Atari ST)
+- `src/styles/global.css` — `/projects/` and 404 (dark)
 
 ## Deployment
 

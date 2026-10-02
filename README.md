@@ -14,6 +14,22 @@ npm run preview   # preview production build locally
 
 The dev server also accepts connections from the hostname `jesus` (configured in `astro.config.mjs`).
 
+## Landing page skins
+
+The landing page renders the same content in three skins: `gem` (GEM desktop),
+`disks` (floppy disk box) and `basic` (GFA BASIC listing). All three are in the
+HTML; `<html data-skin="…">` selects the visible one via `src/styles/home.css`.
+
+Skin selection, in order of precedence:
+
+1. `?skin=gem|disks|basic` in the URL (not stored)
+2. `localStorage['mf-skin']` — set when a visitor picks a skin
+3. `sessionStorage['mf-skin']` — random pick, stable for the browser session
+
+The selection script runs inline in `<head>` before first paint. The landing
+page loads `src/styles/home.css` only; `/projects/` and 404 use
+`src/layouts/Base.astro` with `src/styles/global.css`.
+
 ## Projects
 
 ### Adding a project
@@ -29,6 +45,8 @@ github: "https://github.com/meltforce/example"
 url: "https://example.meltforce.org"
 featured: true
 order: 1
+file: "EXAMPLE.PRG"
+icon: "doc"
 ---
 ```
 
@@ -38,11 +56,16 @@ Frontmatter fields:
 |-------|----------|---------|-------|
 | `title` | yes | | |
 | `description` | yes | | Shown in the listing |
-| `tags` | no | `[]` | Rendered as plain labels, not linked |
+| `tags` | no | `[]` | Rendered as plain labels, not linked. The language tag follows the repo's primary language on GitHub |
 | `github` | no | | Adds the `src` link |
 | `url` | no | | Primary link target; falls back to `github` |
 | `featured` | no | `false` | Controls appearance on the landing page |
 | `order` | no | `99` | Sort order among featured projects |
+| `file` | no | | GEM skin label under the icon, e.g. `VOXTRAL.PRG` |
+| `icon` | no | `doc` | GEM skin bitmap name from `src/lib/pixel-icons.ts` |
+
+The `disks` skin assigns disk colours by position among featured projects (five
+colours, repeating).
 
 Schema is defined in `src/content.config.ts`. The Markdown body is not rendered;
 only the frontmatter appears in the listing.
