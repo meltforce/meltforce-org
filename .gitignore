@@ -4,3 +4,5 @@ dist/
 .DS_Store
 .env
 tools/node_modules/
+.claude/settings.local.json
+CLAUDE.local.md
